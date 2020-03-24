@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head><title>Covid 19 Current Data</title>
+<link rel="stylesheet" href="asset/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="asset/css/dropdown_menu.css" type="text/css">
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1.0, width=device-width">
+<script src="asset/js/jquery.min.js"></script>
+<script src="asset/js/bootstrap.min.js"></script>
+</head>
+<body >
+<div id="main_content" style="position:relative">
+<div class="sidenav" id="mysidenav">
+<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">[ X ]</a>
+<a class="nav-link" href="region_data.html">Regional Data</a>
+<a class="nav-link" href="index.html">Country Data</a>
+<a class="nav-link" href="howto.html">How To Avoid Corona</a>
+</div>
+<div id="main_content" style="position:relative">
+		<div style="background-color:black;color:white;width:100%;position:fixed;z-index:1000">
+			<span style="font-size:30px;cursor:pointer;" onclick="openNav()">&#9776; Menu</span>
+		</div><br><br>
+<div class="container col-md-6">
+Data persebaran COVID-19 Di indonesia<br>
+<input class="form-control container col-sm-4" placeholder="cari provinsi" id="cari" onkeyup="cari_data()"><br>
+
+<div id="isi">
+
+</div>
+</div>
+<div class="container col-md-6">
+	<p>last update : <div id="tgl"></div>  <div id="jm"></div></p>
+	<p style="font-style:italic"> source : <p id="smb"></p></p>
+</div>
+<script>
+$(document).ready(function(){
+	jalan();
+	cek_update();
+	
+});
+function cari_data(){
+			var input,filter,table,tr,td,i,j,td1,txt1,fil1;
+			input=document.getElementById("cari");
+			filter=input.value.toUpperCase();
+			table=document.getElementById("isi");
+			tr=table.getElementsByTagName("ol");
+			for(i=0;i<tr.length;i++){
+				td1=tr[i].getElementsByTagName("li")[0];
+				if(td1){
+				txt1=td1.textContent || td1.innerText;
+				fil1=txt1.toUpperCase().indexOf(filter);	
+					if (fil1>-1){
+						tr[i].style.display="";
+					}
+					else{
+						tr[i].style.display="none";	
+					}
+				}
+				
+			}
+		}
+function jalan(){
+	$.ajax({
+		url :'https://cypher999.github.io/data.json',
+			dataType:'json',
+			success:function(data){
+			try{
+				var json=data;
+				if(json.length>0){
+				var i;
+					for(i=0;i<json.length;i++){
+						var html=[];
+						var isi_data=json[i];
+						var no=i+1;
+						var prov=isi_data.provinsi;
+						var konf=isi_data.Terkonfirmasi;
+						var sem=isi_data.Sembuh;						
+						var men=isi_data.meninggal;
+						html.push("<ol style=\"list-style-type:none\"><li>"+prov);					
+						html.push("<ul class='bg-secondary' style=\"list-style-type:none;\"><li style=\"color:yellow\">Terkonfirmasi:"+konf+"</li>");
+						html.push("<li style=\"color:green\">Sembuh : "+sem+"</li>");
+						html.push("<li style=\"color:red\">Meninggal : "+men+"</li>");
+						html.push("</ul></li></ol>");
+						$("#isi").append(html.join(""));
+					}
+					
+				}
+				
+			}
+			catch(e){
+				alert("Gagal mendapatkan data dari server");	
+			}
+		},error:function(resp){
+		
+		}
+	});
+}
+function cek_update(){
+	$.ajax({
+		url :'https://cypher999.github.io/update.json',
+			dataType:'json',
+			success:function(data){
+			try{
+				var json=data;
+				var tgl=json.update_date;
+				var hour=json.update_hour;						
+				var source=json.sumber;
+				$("#tgl").html(tgl);
+				$("#jm").html(hour);
+				$("#smb").html(source);
+							}
+			catch(e){
+				alert("Gagal mendapatkan data dari server");	
+			}
+		},error:function(resp){
+		
+		}
+	});
+}
+</script>
+<script src="asset/js/dropdown_menu.js"></script>
+
+</body>

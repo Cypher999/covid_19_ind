@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head><title>Covid 19 Current Data</title>
+<link rel="stylesheet" href="asset/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="asset/css/dropdown_menu.css" type="text/css">
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1.0, width=device-width">
+<script src="asset/js/jquery.min.js"></script>
+<script src="asset/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div id="main_content" style="position:relative">
+<div class="sidenav" id="mysidenav">
+<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">[ X ]</a>
+<a class="nav-link" href="region_data.html">Regional Data</a>
+<a class="nav-link" href="index.html">Country Data</a>
+<a class="nav-link" href="howto.html">How To Avoid Corona</a>
+</div>
+<div id="main_content" style="position:relative">
+		<div style="background-color:black;color:white;width:100%;position:fixed;z-index:1000">
+			<span style="font-size:30px;cursor:pointer;" onclick="openNav()">&#9776; Menu</span>
+		</div><br><br>
+Data persebaran COVID-19 Di indonesia<br>
+
+<div class="container col-md-4">
+	<div class="card-deck">
+		<div class="card bg-secondary">
+			<div class="card-body text-center" style="color:yellow;font-weight:bold">
+				<p class="card-text">Confirmed</p>
+				<p class="card-text" id="konf"></p>
+			</div>
+		</div>
+		<div class="card bg-secondary">
+			<div class="card-body text-center">
+				<p class="card-text">Recovered</p>
+				<p class="card-text" id="sem"></p>
+			</div>
+		</div>
+		<div class="card bg-secondary">
+			<div class="card-body text-center" style="color:red";font-weight:bold>
+				<p class="card-text">Death</p>
+				<p class="card-text" id="men"></p>
+			</div>
+		</div>
+	</div><br><br>
+	<div class="container">
+	<p>last update : <div id="tgl"></div>  <div id="jm"></div></p>
+	<p style="font-style:italic"> source : <p id="smb"></p></p>
+</div>
+</div>
+<script>
+$(document).ready(function(){
+	jalan();
+	cek_update();
+});
+
+function jalan(){
+	$.ajax({
+		url :'https://cypher999.github.io/all.json',
+			dataType:'json',
+			success:function(data){
+			try{
+				var json=data;
+				var konf=json.Terkonfirmasi;
+				var sem=json.Sembuh;						
+				var men=json.Meninggal;
+				$("#konf").html(konf);
+				$("#sem").html(sem);
+				$("#men").html(men);
+							}
+			catch(e){
+				alert("Gagal mendapatkan data dari server");	
+			}
+		},error:function(resp){
+		
+		}
+	});
+}
+function cek_update(){
+	$.ajax({
+		url :'https://cypher999.github.io/update.json',
+			dataType:'json',
+			success:function(data){
+			try{
+				var json=data;
+				var tgl=json.update_date;
+				var hour=json.update_hour;						
+				var source=json.sumber;
+				$("#tgl").html(tgl);
+				$("#jm").html(hour);
+				$("#smb").html(source);
+							}
+			catch(e){
+				alert("Gagal mendapatkan data dari server");	
+			}
+		},error:function(resp){
+		
+		}
+	});
+}
+</script>
+<script src="asset/js/dropdown_menu.js"></script>
+</body>
